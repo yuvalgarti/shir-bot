@@ -29,13 +29,12 @@ def is_process_tweet_needed(tweet):
     is_length_ok = 10 < len(tweet.text) < 100
     is_user_protected = tweet.user.protected
     return not is_mention and not is_link and not is_user_protected and is_length_ok and \
-           is_percentage_hebrew(tweet.text, 0.8)
+        is_percentage_hebrew(tweet.text, 0.8)
 
 
 def get_nikud_timeline(api, user_id, num_tweets):
     global LAST_TWEET_ID
     result = []
-    print(LAST_TWEET_ID)
     timeline = api.home_timeline(id=user_id, since_id=LAST_TWEET_ID, exclude_replies=True)
     tweet_count = 0
     for status in timeline:
@@ -67,6 +66,7 @@ if __name__ == '__main__':
     tweepy_api_for_timeline = tweepy.API(auth_for_timeline, wait_on_rate_limit=True)
     tweepy_api = tweepy.API(auth, wait_on_rate_limit=True)
     schedule.every(4).hours.do(tweet_nikud, tweepy_api, tweepy_api_for_timeline, 3)
+    schedule.every(15).minutes.do(print, "I'm Alive...")
     while True:
         try:
             schedule.run_pending()
