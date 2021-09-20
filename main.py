@@ -1,5 +1,4 @@
 import os
-import random
 import re
 import time
 
@@ -8,6 +7,7 @@ import tweepy
 
 import dicta_utils
 
+LAST_TWEET_ID = 1
 
 def is_hebrew(text):
     return bool(re.match('^[א-ת]*$', text))
@@ -33,8 +33,10 @@ def is_process_tweet_needed(tweet):
 
 
 def get_nikud_timeline(api, user_id, num_tweets):
+    global LAST_TWEET_ID
     result = []
-    timeline = api.home_timeline(id=user_id)
+    print(LAST_TWEET_ID)
+    timeline = api.home_timeline(id=user_id, since_id=LAST_TWEET_ID, exclude_replies=True)
     tweet_count = 0
     for status in timeline:
         if tweet_count >= num_tweets:
@@ -42,6 +44,8 @@ def get_nikud_timeline(api, user_id, num_tweets):
         if is_process_tweet_needed(status):
             tweet_count += 1
             result.append(dicta_utils.get_dicta_nikud(status.text) + '\n\n' + 'מקור: ' + '@' + status.user.screen_name)
+            if status.id > LAST_TWEET_ID:
+                LAST_TWEET_ID = status
     return result
 
 
