@@ -66,8 +66,7 @@ if __name__ == '__main__':
 
     tweepy_api_for_timeline = tweepy.API(auth_for_timeline, wait_on_rate_limit=True)
     tweepy_api = tweepy.API(auth, wait_on_rate_limit=True)
-
-    schedule.every(3).hours.do(tweet_nikud, tweepy_api, tweepy_api_for_timeline, 3)
+    schedule.every(4).hours.do(tweet_nikud, tweepy_api, tweepy_api_for_timeline, 3)
     while True:
         try:
             schedule.run_pending()
