@@ -1,13 +1,13 @@
 import os
 import re
 import time
-
 import schedule as schedule
 import tweepy
 
 import dicta_utils
 
 LAST_TWEET_ID = 1
+
 
 def is_hebrew(text):
     return bool(re.match('^[א-ת]*$', text))
@@ -29,7 +29,7 @@ def is_process_tweet_needed(tweet):
     is_length_ok = 10 < len(tweet.text) < 100
     is_user_protected = tweet.user.protected
     return not is_mention and not is_link and not is_user_protected and is_length_ok and \
-        is_percentage_hebrew(tweet.text, 0.8)
+           is_percentage_hebrew(tweet.text, 0.8)
 
 
 def get_nikud_timeline(api, user_id, num_tweets):
