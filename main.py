@@ -45,7 +45,7 @@ def get_nikud_timeline(api, user_id, num_tweets):
             tweet_count += 1
             result.append(dicta_utils.get_dicta_nikud(status.text) + '\n\n' + 'מקור: ' + '@' + status.user.screen_name)
             if status.id > LAST_TWEET_ID:
-                LAST_TWEET_ID = status
+                LAST_TWEET_ID = status.id
     return result
 
 
