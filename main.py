@@ -26,7 +26,7 @@ def is_percentage_hebrew(text, percent):
 def is_process_tweet_needed(tweet):
     is_mention = '@' in tweet.text
     is_link = 'https://' in tweet.text
-    is_length_ok = 10 < len(tweet.text) < 100
+    is_length_ok = 10 < len(tweet.text) < 150
     is_user_protected = tweet.user.protected
     return not is_mention and not is_link and not is_user_protected and is_length_ok and \
         is_percentage_hebrew(tweet.text, 0.8)
@@ -51,7 +51,7 @@ def get_nikud_timeline(api, user_id, num_tweets):
 def tweet_nikud(api, api_for_timeline, num_tweets):
     nikud_timeline = get_nikud_timeline(api_for_timeline, api_for_timeline.me().id, num_tweets)
     for tweet in nikud_timeline:
-        print('Tweeting: ' + tweet.replace('\n', ' '))
+        print('Tweeting: ' + tweet.replace('\n', '\\n'))
         if os.environ.get('IS_PRODUCTION', 'True') == 'True':
             api.update_status(tweet)
 
