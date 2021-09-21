@@ -23,7 +23,7 @@ def is_percentage_hebrew(text, percent):
 
 def is_process_tweet_needed(tweet):
     is_mention = '@' in tweet.text
-    is_link = 'https://' in tweet.text
+    is_link = 'urls' in tweet.entities
     is_length_ok = 10 < len(tweet.text) < 150
     is_user_protected = tweet.user.protected
     return not is_mention and not is_link and not is_user_protected and is_length_ok and \
