@@ -23,8 +23,8 @@ def is_percentage_hebrew(text, percent):
 
 def is_process_tweet_needed(tweet):
     is_mention = '@' in tweet.text
-    is_link = 'urls' in tweet.entities
-    is_length_ok = 20 < len(tweet.text) < 180
+    is_link = 'urls' in tweet.entities and tweet.entities['urls']
+    is_length_ok = 20 < len(tweet.text) < 220
     is_user_protected = tweet.user.protected
     return not is_mention and not is_link and not is_user_protected and is_length_ok and \
         is_percentage_hebrew(tweet.text, 0.8)
@@ -60,6 +60,7 @@ if __name__ == '__main__':
 
     tweepy_api_for_timeline = tweepy.API(auth_for_timeline, wait_on_rate_limit=True)
     tweepy_api = tweepy.API(auth, wait_on_rate_limit=True)
+    tweet_nikud(tweepy_api, tweepy_api_for_timeline, 3)
     schedule.every(4).hours.do(tweet_nikud, tweepy_api, tweepy_api_for_timeline, 3)
     schedule.every(15).minutes.do(print, "I'm Alive...")
     while True:
