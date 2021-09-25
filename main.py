@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
     tweepy_api = tweepy.API(auth, wait_on_rate_limit=True)
     tweet_nikud(tweepy_api, 3)
-    schedule.every(4).hours.do(tweet_nikud, tweepy_api, 3)
+    schedule.every(3).hours.do(tweet_nikud, tweepy_api, 3)
     schedule.every(15).minutes.do(print, "I'm Alive...")
     while True:
         try:
