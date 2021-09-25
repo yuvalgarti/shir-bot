@@ -32,9 +32,8 @@ def is_process_tweet_needed(tweet):
 
 def get_nikud_timeline(api, user_id, num_tweets):
     result = []
-    timeline = api.home_timeline(id=user_id, exclude_replies=True)
     tweet_count = 0
-    for status in timeline:
+    for status in tweepy.Cursor(api.home_timeline, id=user_id, exclude_replies=True).items():
         if tweet_count >= num_tweets:
             break
         if is_process_tweet_needed(status):
@@ -43,8 +42,8 @@ def get_nikud_timeline(api, user_id, num_tweets):
     return result
 
 
-def tweet_nikud(api, api_for_timeline, num_tweets):
-    nikud_timeline = get_nikud_timeline(api_for_timeline, api_for_timeline.me().id, num_tweets)
+def tweet_nikud(api, num_tweets):
+    nikud_timeline = get_nikud_timeline(api, api.me().id, num_tweets)
     for tweet in nikud_timeline:
         print('Tweeting: ' + tweet.replace('\n', '\\n'))
         if os.environ.get('IS_PRODUCTION', 'True') == 'True':
@@ -55,13 +54,9 @@ if __name__ == '__main__':
     auth = tweepy.OAuthHandler(os.environ['SHIRBOT_CONSUMER_KEY'], os.environ['SHIRBOT_CONSUMER_VALUE'])
     auth.set_access_token(os.environ['SHIRBOT_ACCESS_TOKEN_KEY'], os.environ['SHIRBOT_ACCESS_TOKEN_VALUE'])
 
-    auth_for_timeline = tweepy.OAuthHandler(os.environ['TWITTER_CONSUMER_KEY'], os.environ['TWITTER_CONSUMER_VALUE'])
-    auth_for_timeline.set_access_token(os.environ['TWITTER_ACCESS_TOKEN_KEY'], os.environ['TWITTER_ACCESS_TOKEN_VALUE'])
-
-    tweepy_api_for_timeline = tweepy.API(auth_for_timeline, wait_on_rate_limit=True)
     tweepy_api = tweepy.API(auth, wait_on_rate_limit=True)
-    tweet_nikud(tweepy_api, tweepy_api_for_timeline, 3)
-    schedule.every(4).hours.do(tweet_nikud, tweepy_api, tweepy_api_for_timeline, 3)
+    tweet_nikud(tweepy_api, 3)
+    schedule.every(4).hours.do(tweet_nikud, tweepy_api, 3)
     schedule.every(15).minutes.do(print, "I'm Alive...")
     while True:
         try:
