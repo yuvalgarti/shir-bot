@@ -13,5 +13,6 @@ class NikudAction(MentionAction):
         comment = self.api.get_status(mention.in_reply_to_status_id)
         if is_process_tweet_needed(mention):
             status = dicta_utils.get_dicta_tweet_text(comment.text, comment.user.screen_name)
+            print('From mention: ' + status)
             if self.is_production:
                 self.api.update_status(status=status, in_reply_to_status_id=mention.id)
