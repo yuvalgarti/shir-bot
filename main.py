@@ -4,6 +4,8 @@ import time
 import schedule as schedule
 import tweepy
 from mention_bot import MentionHandler
+
+import utils
 from utils import is_process_tweet_needed
 
 import dicta_utils
@@ -17,9 +19,10 @@ def get_nikud_timeline(api, user_id, num_tweets):
     for status in tweepy.Cursor(api.home_timeline, id=user_id, exclude_replies=True).items():
         if tweet_count >= num_tweets:
             break
-        if is_process_tweet_needed(status):
+        if is_process_tweet_needed(api, status):
             tweet_count += 1
-            result.append(dicta_utils.get_dicta_tweet_text(status.text, status.user.screen_name))
+            tweet_text = utils.get_tweet_full_text(api, status)
+            result.append(dicta_utils.get_dicta_tweet_text(tweet_text, status.user.screen_name))
     return result
 
 

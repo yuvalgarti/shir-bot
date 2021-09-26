@@ -1,6 +1,7 @@
 from mention_bot import MentionAction
 
 import dicta_utils
+import utils
 from utils import is_process_tweet_needed
 
 
@@ -11,8 +12,9 @@ class NikudAction(MentionAction):
 
     def run(self, mention):
         comment = self.api.get_status(mention.in_reply_to_status_id)
-        if is_process_tweet_needed(comment):
-            status = dicta_utils.get_dicta_tweet_text(comment.text, comment.user.screen_name)
+        if is_process_tweet_needed(self.api, comment):
+            tweet_text = utils.get_tweet_full_text(self.api, comment)
+            status = dicta_utils.get_dicta_tweet_text(tweet_text, comment.user.screen_name)
         else:
             status = 'שימו לב למגבלות שמפורטות כאן: https://twitter.com/shir_bot/status/1442192544058707975'
         status = '@' + mention.user.screen_name + ' ' + status
