@@ -15,6 +15,7 @@ class NikudAction(MentionAction):
             status = dicta_utils.get_dicta_tweet_text(comment.text, comment.user.screen_name)
         else:
             status = 'שימו לב למגבלות שמפורטות כאן: https://twitter.com/shir_bot/status/1442192544058707975'
+        status = '@' + mention.user.screen_name + ' ' + status
         print('From mention: ' + status.replace('\n', '\\n'))
         if self.is_production:
             self.api.update_status(status=status, in_reply_to_status_id=mention.id)
