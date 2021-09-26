@@ -32,7 +32,7 @@ def tweet_nikud(api, num_tweets):
 
 
 def nikud_scheduled(api):
-    tweet_nikud(tweepy_api, 3)
+    # tweet_nikud(tweepy_api, 3)
     schedule.every(3).hours.do(tweet_nikud, tweepy_api, 3)
     schedule.every(15).minutes.do(print, "I'm Alive...")
 
