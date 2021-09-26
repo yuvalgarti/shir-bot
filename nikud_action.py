@@ -1,7 +1,7 @@
 from mention_bot import MentionAction
-from utils import is_process_tweet_needed
 
 import dicta_utils
+from utils import is_process_tweet_needed
 
 
 class NikudAction(MentionAction):
@@ -11,8 +11,8 @@ class NikudAction(MentionAction):
 
     def run(self, mention):
         comment = self.api.get_status(mention.in_reply_to_status_id)
-        if is_process_tweet_needed(mention):
+        if is_process_tweet_needed(comment):
             status = dicta_utils.get_dicta_tweet_text(comment.text, comment.user.screen_name)
-            print('From mention: ' + status)
+            print('From mention: ' + status.replace('\n', '\\n'))
             if self.is_production:
                 self.api.update_status(status=status, in_reply_to_status_id=mention.id)
