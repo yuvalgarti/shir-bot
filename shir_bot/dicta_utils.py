@@ -42,4 +42,4 @@ def get_dicta_nikud(text):
 
 
 def get_dicta_tweet_text(text, screen_name):
-    return get_dicta_nikud(text) + '\n\n' + 'מקור: ' + '@' + screen_name
+    return get_dicta_nikud(text) + '\n\n' + 'מקור: ' + '@ ' + screen_name
