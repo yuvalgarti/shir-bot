@@ -1,51 +1,13 @@
+import logging
 import os
+import sys
 import threading
-import time
-import schedule as schedule
 import tweepy
 from mention_bot import MentionHandler
 
-import utils
-from utils import is_process_tweet_needed
-
-import dicta_utils
-from firebase_service import FirebaseService
-from nikud_action import NikudAction
-
-
-def get_nikud_timeline(api, user_id, num_tweets):
-    result = []
-    tweet_count = 0
-    for status in tweepy.Cursor(api.home_timeline, id=user_id, exclude_replies=True).items():
-        if tweet_count >= num_tweets:
-            break
-        if is_process_tweet_needed(api, status):
-            tweet_count += 1
-            tweet_text = utils.get_tweet_full_text(api, status)
-            result.append(dicta_utils.get_dicta_tweet_text(tweet_text, status.user.screen_name))
-    return result
-
-
-def tweet_nikud(api, num_tweets):
-    nikud_timeline = get_nikud_timeline(api, api.me().id, num_tweets)
-    for tweet in nikud_timeline:
-        print('Tweeting: ' + tweet.replace('\n', '\\n'))
-        if os.environ.get('IS_PRODUCTION', 'True') == 'True':
-            api.update_status(tweet)
-
-
-def nikud_scheduled(api):
-    # tweet_nikud(tweepy_api, 3)
-    schedule.every(3).hours.do(tweet_nikud, tweepy_api, 3)
-    schedule.every(15).minutes.do(print, "I'm Alive...")
-
-    while True:
-        try:
-            schedule.run_pending()
-            time.sleep(1)
-        except Exception as exp:
-            print('ERROR! {}'.format(str(exp)))
-
+from shir_bot.firebase_service import FirebaseService
+from shir_bot.nikud_action import NikudAction
+from shir_bot.nikud_schedule import nikud_scheduled
 
 if __name__ == '__main__':
     auth = tweepy.OAuthHandler(os.environ['SHIRBOT_CONSUMER_KEY'], os.environ['SHIRBOT_CONSUMER_VALUE'])
@@ -62,6 +24,16 @@ if __name__ == '__main__':
 
     tweepy_api = tweepy.API(auth, wait_on_rate_limit=True)
     firebase_db = FirebaseService(firebase_config)
+
+    log_modules = ['shir_bot', 'mention_bot']
+    logFormat = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setFormatter(logFormat)
+
+    for module_name in log_modules:
+        logger = logging.getLogger(module_name)
+        logger.setLevel('DEBUG')
+        logger.addHandler(console_handler)
 
     nikud_mention_action = NikudAction(tweepy_api, is_production)
     mention_handler = MentionHandler(tweepy_api,
