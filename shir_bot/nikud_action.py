@@ -21,7 +21,8 @@ class NikudAction(MentionAction):
                 tweet_text = utils.get_tweet_full_text(self.api, comment)
                 status = dicta_utils.get_dicta_tweet_text(tweet_text, comment.user.screen_name)
             else:
-                status = 'שימו לב למגבלות שמפורטות כאן: https://twitter.com/shir_bot/status/1442192544058707975'
+                status = 'הציוץ לא עומד במגבלות: הציוץ צריך להיות בין 20 ל 220 תווים, אסור שיהיו קישורים בציוץ, ' \
+                         'הציוץ צריך להיות לפחות 80% עברית '
         status = '@' + mention.user.screen_name + ' ' + status
         if len(status) > 280:
             status = 'הַצִּיּוּץ (כּוֹלֵל הַנִּקּוּד) אָרֹךְ מִדַּי...'
