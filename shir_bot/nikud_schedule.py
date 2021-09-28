@@ -33,11 +33,11 @@ def tweet_nikud(api, num_tweets):
     nikud_timeline = get_nikud_timeline(api, api.me().id, num_tweets)
     for tweet_with_metadata in nikud_timeline:
         logger.info('Tweeting: ' + tweet_with_metadata['nikud'].replace('\n', '\\n'))
-        # if os.environ.get('IS_PRODUCTION', 'True') == 'True':
-        status = api.update_status(tweet_with_metadata['nikud'])
-        api.update_status(status=('@' + api.me().screen_name + ' ' + 'מקור'), in_reply_to_status_id=status.id,
-                          attachment_url='https://twitter.com/{}/status/{}'.format(tweet_with_metadata['screen_name'],
-                                                                                   tweet_with_metadata['tweet_id']))
+        if os.environ.get('IS_PRODUCTION', 'True') == 'True':
+            status = api.update_status(tweet_with_metadata['nikud'])
+            api.update_status(status=('@' + api.me().screen_name + ' ' + 'מקור'), in_reply_to_status_id=status.id,
+                              attachment_url='https://twitter.com/{}/status/{}'.format(tweet_with_metadata['screen_name'],
+                                                                                       tweet_with_metadata['tweet_id']))
     logger.info('nikud_schedule task ended')
 
 
