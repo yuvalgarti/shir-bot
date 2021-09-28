@@ -39,7 +39,3 @@ def replace_random_spaces_with_newline(dicta_list):
 
 def get_dicta_nikud(text):
     return ''.join(replace_random_spaces_with_newline(get_dicta_nikud_as_list(text)))
-
-
-def get_dicta_tweet_text(text, screen_name):
-    return get_dicta_nikud(text) + '\n\n' + 'מקור: ' + '@ ' + screen_name

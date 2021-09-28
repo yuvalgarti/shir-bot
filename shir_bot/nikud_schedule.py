@@ -19,25 +19,30 @@ def get_nikud_timeline(api, user_id, num_tweets):
             break
         if is_process_tweet_needed(api, status):
             tweet_text = utils.get_tweet_full_text(api, status)
-            nikud_tweet = dicta_utils.get_dicta_tweet_text(tweet_text, status.user.screen_name)
+            nikud_tweet = dicta_utils.get_dicta_nikud(tweet_text)
             if len(nikud_tweet) < 280:
                 tweet_count += 1
-                result.append(nikud_tweet)
+                result.append({'nikud': nikud_tweet,
+                               'screen_name': status.user.screen_name,
+                               'tweet_id': status.id})
     return result
 
 
 def tweet_nikud(api, num_tweets):
     logger.info('nikud_schedule task started')
     nikud_timeline = get_nikud_timeline(api, api.me().id, num_tweets)
-    for tweet in nikud_timeline:
-        logger.info('Tweeting: ' + tweet.replace('\n', '\\n'))
-        if os.environ.get('IS_PRODUCTION', 'True') == 'True':
-            api.update_status(tweet)
+    for tweet_with_metadata in nikud_timeline:
+        logger.info('Tweeting: ' + tweet_with_metadata['nikud'].replace('\n', '\\n'))
+        # if os.environ.get('IS_PRODUCTION', 'True') == 'True':
+        status = api.update_status(tweet_with_metadata['nikud'])
+        api.update_status(status=('@' + api.me().screen_name + ' ' + 'מקור'), in_reply_to_status_id=status.id,
+                          attachment_url='https://twitter.com/{}/status/{}'.format(tweet_with_metadata['screen_name'],
+                                                                                   tweet_with_metadata['tweet_id']))
     logger.info('nikud_schedule task ended')
 
 
 def nikud_scheduled(api):
-    # tweet_nikud(tweepy_api, 3)
+    # tweet_nikud(api, 3)
     logger.info('nikud_schedule started')
     job = schedule.every(3).hours.do(tweet_nikud, api, 3)
 
