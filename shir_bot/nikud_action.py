@@ -30,5 +30,4 @@ class NikudAction(MentionAction):
         status = '@' + mention.user.screen_name + ' ' + status
         self.logger.info('From mention: ' + status.replace('\n', '\\n'))
         if self.is_production:
-            self.api.update_status(status=status, in_reply_to_status_id=mention.id,
-                                   attachment_url='https://twitter.com/{}/status/{}'.format(comment.user.screen_name, comment.id))
+            self.api.update_status(status=status, in_reply_to_status_id=mention.id)
