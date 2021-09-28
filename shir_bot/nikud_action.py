@@ -25,7 +25,7 @@ class NikudAction(MentionAction):
                          'הציוץ צריך להיות לפחות 80% עברית '
         status = '@' + mention.user.screen_name + ' ' + status
         if len(status) > 280:
-            status = 'הַצִּיּוּץ (כּוֹלֵל הַנִּקּוּד) אָרֹךְ מִדַּי...'
+            status = '@' + mention.user.screen_name + ' ' + 'הַצִּיּוּץ (כּוֹלֵל הַנִּקּוּד) אָרֹךְ מִדַּי...'
         self.logger.info('From mention: ' + status.replace('\n', '\\n'))
         if self.is_production:
             self.api.update_status(status=status, in_reply_to_status_id=mention.id)
