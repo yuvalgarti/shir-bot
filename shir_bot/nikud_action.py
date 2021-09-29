@@ -24,10 +24,20 @@ class NikudAction(MentionAction):
                 status = 'הציוץ לא עומד במגבלות: הציוץ צריך להיות בין 20 ל 220 תווים, אסור שיהיו קישורים בציוץ, ' \
                          'הציוץ צריך להיות לפחות 80% עברית '
 
-        if len(status) > 280:
+        status_part_2 = None
+        if 280 < len(status) < 560:
+            status_part_1 = status[:int(len(status)/2)]
+            status_part_2 = status[int(len(status)/2):]
+            status = status_part_1
+        if len(status) >= 560:
             status = 'הַצִּיּוּץ (כּוֹלֵל הַנִּקּוּד) אָרֹךְ מִדַּי...'
 
         status = '@' + mention.user.screen_name + ' ' + status
         self.logger.info('From mention: ' + status.replace('\n', '\\n'))
+        if status_part_2:
+            status_part_2 = '@' + mention.user.screen_name + ' @' + self.api.me().screen_name + ' ' + status_part_2
+            self.logger.info('From mention part 2: ' + status_part_2.replace('\n', '\\n'))
         if self.is_production:
-            self.api.update_status(status=status, in_reply_to_status_id=mention.id)
+            created_tweet = self.api.update_status(status=status, in_reply_to_status_id=mention.id)
+            if status_part_2:
+                self.api.update_status(status=status_part_2, in_reply_to_status_id=created_tweet.id)
