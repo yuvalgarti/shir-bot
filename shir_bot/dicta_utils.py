@@ -26,7 +26,7 @@ def get_dicta_nikud_as_list(text):
 
 
 def replace_random_spaces_with_newline(dicta_list):
-    num_chars_between_spaces = 25
+    num_chars_between_spaces = 30
     num_chars_in_list = len(''.join(dicta_list))
     num_spaces = 0 if num_chars_in_list <= num_chars_between_spaces else int(
         num_chars_in_list / num_chars_between_spaces)
