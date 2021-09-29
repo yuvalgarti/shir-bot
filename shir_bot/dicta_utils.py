@@ -5,7 +5,7 @@ import requests
 
 
 def send_dicta_request(data):
-    body = {"task": "nakdan", "data": str(data), "genre": "modern"}
+    body = {"task": "nakdan", "data": str(data), "genre": "modern", "keepmetagim": False}
     headers = {'Content-type': 'text/plain;charset=UTF-8', 'accept-encoding': 'gzip, deflate, br'}
     response = requests.post('https://nakdan-3-0a.loadbalancer.dicta.org.il/api', json=body, headers=headers)
     return json.loads(response.text)
@@ -38,4 +38,5 @@ def replace_random_spaces_with_newline(dicta_list):
 
 
 def get_dicta_nikud(text):
+    text = text.replace('\n', ' ')
     return ''.join(replace_random_spaces_with_newline(get_dicta_nikud_as_list(text)))

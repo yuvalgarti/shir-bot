@@ -44,7 +44,7 @@ def tweet_nikud(api, num_tweets):
 def nikud_scheduled(api):
     # tweet_nikud(api, 3)
     logger.info('nikud_schedule started')
-    job = schedule.every(3).hours.do(tweet_nikud, api, 3)
+    job = schedule.every(3).hours.do(tweet_nikud, api, 5)
 
     while True:
         try:
@@ -53,4 +53,4 @@ def nikud_scheduled(api):
         except Exception as exp:
             logger.exception('ERROR! {}'.format(str(exp)))
             schedule.cancel_job(job)
-            job = schedule.every(3).hours.do(tweet_nikud, api, 3)
+            job = schedule.every(3).hours.do(tweet_nikud, api, 5)
